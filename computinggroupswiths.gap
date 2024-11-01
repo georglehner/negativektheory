@@ -40,7 +40,7 @@ for j in [1..Length(AllSmallGroups(n))] do
 G := SmallGroup(n,j);
 s := sOfGroup(G);
 if s>0 then 
-     if not ForAny( NormalSubgroups(G), N ->  ForAny( ElementGrps, id -> id = IdSmallGroup( FactorGroup( G, N )) ) ) then Add(ElementGrps, [n,j]); fi;
+     if not ForAny( NormalSubgroups(G), N ->  IdSmallGroup( FactorGroup( G, N ) ) in ElementGrps ) then Add(ElementGrps, [n,j]); fi;
      fi;          
 od;
 end;
