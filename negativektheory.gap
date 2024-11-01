@@ -62,14 +62,14 @@ RationalConjugacyClasses := function(cc)
 # Note: this function has the same functionality as RationalClasses
 
 local orders, m, galoisgroup, ccsortedbyorder, classesoforderi, kconjugate, rationalconjugacyclasses, c, t, allconjugatestoc;
-orders := Set(List(cc, c->Order(First(c)) )); # The set of all appearing orders of elements of G
+orders := Set(List(cc, Representative), Order); # The set of all appearing orders of elements of G
 m := Lcm(orders);                             # This is the exponent of G
 galoisgroup := PrimeResidues(m);
 
 rationalconjugacyclasses := [];
-ccsortedbyorder := List( orders, i -> Filtered( cc , c -> Order(First(c)) = i ) );  # ccSortedByOrder is a list with entries the set of all conjugacy classes of given order i.
+ccsortedbyorder := List( orders, i -> Filtered( cc , c -> Order(Representative(c)) = i ) );  # ccSortedByOrder is a list with entries the set of all conjugacy classes of given order i.
 for classesoforderi in ccsortedbyorder do
-    UniteSet(rationalconjugacyclasses, MyPartitionSet(classesoforderi, {c,d} -> ForAny( galoisgroup , t -> First(c)^t in d ) ));
+    UniteSet(rationalconjugacyclasses, MyPartitionSet(classesoforderi, {c,d} -> ForAny( galoisgroup , t -> Representative(c)^t in d ) ));
 # We now partition all classes of order i into the set of equivalence classes of conjugacy classes with respect to k conjugacy
 od;
 return rationalconjugacyclasses;
@@ -92,7 +92,7 @@ local Tm;
 # The output is either true or false
 
 Tm := GaloisGroupOfQpZetamOverQp(m,p);        # Gives the Galois group as a subset of prime residues of m
-return ForAny( Tm, t->First(c)^t in d) ;      # First(c) is any representative of the conjugacy class c. 
+return ForAny( Tm, t->Representative(c)^t in d) ;      
 end;
 
 
@@ -105,11 +105,11 @@ QpConjugacyClasses := function(cc,p)
 # An element g is p-singular if p divides its order
 
 local orders, m, ccsortedbyorder, classesoforderi, qpconjugacyclasses;
-orders := Set(List(cc, c->Order(First(c)) )); # The set of all appearing orders of elements of G
+orders := Set(List(cc, c->Order(Representative(c)) )); # The set of all appearing orders of elements of G
 m := Lcm(orders);                             # This is the exponent of G
 
 qpconjugacyclasses := [];
-ccsortedbyorder := List( orders, i -> Filtered( cc , c -> Order(First(c)) = i ) );   # ccSortedByOrder is a list with entries the set of all conjugacy classes of given order i.
+ccsortedbyorder := List( orders, i -> Filtered( cc , c -> Order(Representative(c)) = i ) );   # ccSortedByOrder is a list with entries the set of all conjugacy classes of given order i.
 for classesoforderi in ccsortedbyorder do
     UniteSet(qpconjugacyclasses, MyPartitionSet(classesoforderi, {c,d} -> QpConjugate(p,c,d,m)) );
 # We now partition all classes of order i into the set of equivalence classes of conjugacy classes with respect to Qp conjugacy
@@ -129,13 +129,12 @@ SingularQpConjugacyClasses := function(cc,p)
 # An element g is p-singular if p divides its order
 
 local orders, singularorders, m, ccsortedbyorder, classesoforderi, singularqpconjugacyclasses;
-orders := Set(List(cc, c->Order(First(c)) )); # The set of all appearing orders of elements of G
+orders := Set(List(cc, c->Order(Representative(c)) )); # The set of all appearing orders of elements of G
 m := Lcm(orders);                             # This is the exponent of G
 
-singularorders := Filtered(List(cc, c->Order(First(c)) ), i -> i mod p = 0 );  # We will only look at orders that are multiples of p
-                                                                               # First(c) picks a representative element of the conjugacy class c
-singularqpconjugacyclasses := [];
-ccsortedbyorder := List( singularorders, i -> Filtered( cc , c -> Order(First(c)) = i ) );  # ccSortedByOrder is a list with entries the set of all conjugacy classes of given order i. We only care about orders divisible by p, hence SingularOrders
+singularorders := Filtered(List(cc, c->Order(Representative(c)) ), i -> i mod p = 0 );  # We will only look at orders that are multiples of p
+                                                                               singularqpconjugacyclasses := [];
+ccsortedbyorder := List( singularorders, i -> Filtered( cc , c -> Order(Representative(c)) = i ) );  # ccSortedByOrder is a list with entries the set of all conjugacy classes of given order i. We only care about orders divisible by p, hence SingularOrders
 for classesoforderi in ccsortedbyorder do
     UniteSet(singularqpconjugacyclasses, MyPartitionSet(classesoforderi, {c,d} -> QpConjugate(p,c,d,m) ) );
 # We now partition all classes of order i into the set of equivalence classes of conjugacy classes with respect to Qp conjugacy
